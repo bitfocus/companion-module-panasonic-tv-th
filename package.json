@@ -1,0 +1,28 @@
+{
+  "name": "panasonic-tv-th",
+	"version": "0.0.1",
+	"api_version": "0.1.0",
+	"description": "Panasonic TV TH Series",
+	"keywords": [
+		"Monitor",
+		"TV",
+		"Display"
+	],
+	"manufacturer": "Panasonic",
+	"product": ["TH-86CQ1W", "TH-75CQ1W","TH-65CQ1W","TH-55CQ1W","TH-50CQ1W","TH-43CQ1W"],
+	"shortname": "TV",
+	"homepage": "https://github.com/bitfocus/companion-module-panasonic-tv-th#readme",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/bitfocus/companion-module-panasonic-tv-th.git"
+	},
+	"author": "William Viker <william@bitfocus.io>",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/bitfocus/companion-module-panasonic-tv-th/issues"
+	}
+}
