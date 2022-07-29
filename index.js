@@ -98,6 +98,7 @@ instance.prototype.init_tcp = function () {
     self.socket.on("data", function (d) {
       if (cmd_debug === true) {
         console.log("Recv:", d);
+        console.log(String(d))
       }
 
       if (String(d) === "Login:") {
