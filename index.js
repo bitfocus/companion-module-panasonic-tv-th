@@ -93,6 +93,16 @@ instance.prototype.init_tcp = function () {
         let seed = String(d).split(" ")[2].trim();
         self.hash = crypto.createHash('md5').update(self.config.user + ":" + self.config.pass + ":" + seed).digest("hex");
       }
+
+      if (String(d).trim() === "000") {
+        debug("TV is Off")
+        self.setVariable('powerState', "off")
+      }
+
+      if (String(d).trim() === "001") {
+        debug("TV is On")
+        self.setVariable('powerState', "on")
+      }
     });
   }
 
