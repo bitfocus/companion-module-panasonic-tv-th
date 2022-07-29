@@ -68,30 +68,16 @@ instance.prototype.init_tcp = function () {
       self.status(self.STATE_ERROR, err);
       self.log("error", "Network error: " + err.message);
       self.connected = false
-      delete self.socket
-      if (self.socketTimer) {
-        clearInterval(self.socketTimer)
-        delete self.socketTimer
-      }
-      self.socketTimer = setInterval(function () {
-        self.status(self.STATUS_ERROR, 'Retrying connection')
-        self.init_tcp()
-      }, 10000)
     });
 
     self.socket.on("connect", function (socket) {
-      debug("Connected");
-      if (self.lastStatus != self.STATUS_OK) {
-        self.status(self.STATUS_OK, 'Connected')
-        debug('Connected to TV')
-        self.lastStatus = self.STATUS_OK
-        self.checkPowerStatus()
-        self.pollTime = self.config.pollTime ? self.config.pollTime * 1000 : 10000
-        self.poll_interval = setInterval(self.poll.bind(self), self.pollTime) //ms for poll
-        self.poll()
-      }
-
+      debug('Connected to TV')
       self.connected = true
+      self.checkPowerStatus()
+      self.pollTime = self.config.pollTime ? self.config.pollTime * 1000 : 10000
+      self.poll_interval = setInterval(self.poll.bind(self), self.pollTime) //ms for poll
+      self.poll()
+
     });
 
     self.socket.on("data", function (d) {
@@ -118,12 +104,12 @@ instance.prototype.init_tcp = function () {
         self.hash = crypto.createHash('md5').update(self.config.user + ":" + self.config.pass + ":" + seed).digest("hex");
       }
 
-      if (String(d).trim() === "000") {
+      if (String(d).trim() === "000" || String(d).trim() === "00POF") {
         debug("TV is Off")
         self.setVariable('powerState', "off")
       }
 
-      if (String(d).trim() === "001") {
+      if (String(d).trim() === "001" || String(d).trim() === "00PON") {
         debug("TV is On")
         self.setVariable('powerState', "on")
       }
@@ -132,20 +118,16 @@ instance.prototype.init_tcp = function () {
 
   self.socket.on('end', function () {
     self.connected = false
-    if (self.lastStatus != self.STATUS_ERROR + ';Disc') {
-      self.log('error', 'Display Disconnected')
-      self.status(self.STATUS_ERROR, 'Disconnected')
-      self.lastStatus = self.STATUS_ERROR + ';Disc'
-    }
+    self.log('error', 'Display Disconnected')
     // set timer to retry connection in 30 secs
-    if (self.socketTimer) {
-      clearInterval(self.socketTimer)
-      delete self.socketTimer
-    }
-    self.socketTimer = setInterval(function () {
-      self.status(self.STATUS_ERROR, 'Retrying connection')
-      self.init_tcp()
-    }, 30000)
+    // if (self.socketTimer) {
+    //   clearInterval(self.socketTimer)
+    //   delete self.socketTimer
+    // }
+    // self.socketTimer = setInterval(function () {
+    //   self.status(self.STATUS_ERROR, 'Retrying connection')
+    //   self.init_tcp()
+    // }, 30000)
     debug('Disconnected')
   })
 };
@@ -329,22 +311,20 @@ instance.prototype.action = function (action) {
   var cmd;
   console.log("XX", action);
   if (self.protocol === "old") {
+    cmd = "\x02" + action.action
+    if (action.options.action !== undefined) {
+      cmd = cmd + ":" + action.options.action
+    }
+    cmd = cmd + "\x03\n"
 
-  }
-  cmd = "\x02" + action.action
-  if (action.options.action !== undefined) {
-    cmd = cmd + ":" + action.options.action
-  }
-  cmd = cmd + "\x03\n"
+    if (cmd !== undefined) {
+      debug("sending ", cmd, "to", self.config.host);
 
-  if (cmd !== undefined) {
-    debug("sending ", cmd, "to", self.config.host);
-
-    if (self.socket !== undefined && self.socket.connected) {
-      self.socket.send(Buffer.from(cmd));
-      console.log(cmd)
-    } else {
-      debug("Socket not connected :(");
+      if (self.socket !== undefined && self.socket.connected) {
+        self.socket.send(Buffer.from(cmd));
+        console.log(cmd)
+      } else {
+        debug("Socket not connected :(");
       }
     }
   } else {
@@ -411,8 +391,8 @@ instance.prototype.poll = function () {
   // // var checkHours = false
 
   // re-connect?
-  if (!self.socket.connected) {
-    self.init_tcp()
+  if (self.socket === undefined && !self.socket.connected) {
+    // self.init_tcp()
     return
   }
   self.checkPowerStatus()
