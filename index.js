@@ -90,6 +90,25 @@ instance.prototype.init_tcp = function () {
       }
     });
   }
+
+  self.socket.on('end', function () {
+    self.connected = false
+    if (self.lastStatus != self.STATUS_ERROR + ';Disc') {
+      self.log('error', 'Display Disconnected')
+      self.status(self.STATUS_ERROR, 'Disconnected')
+      self.lastStatus = self.STATUS_ERROR + ';Disc'
+    }
+    // set timer to retry connection in 30 secs
+    if (self.socketTimer) {
+      clearInterval(self.socketTimer)
+      delete self.socketTimer
+    }
+    self.socketTimer = setInterval(function () {
+      self.status(self.STATUS_ERROR, 'Retrying connection')
+      self.init_tcp()
+    }, 30000)
+    debug('Disconnected')
+  })
 };
 
 // Return config fields for web config
