@@ -291,5 +291,31 @@ instance.prototype.action = function (action) {
   }
 };
 
+instance.prototype.setProtocol = function () {
+  var self = this
+  self.protocol = this.isNewProtocol() ? 'new' : 'old';
+  debug("Protocol:", self.protocol);
+}
+
+instance.prototype.isNewProtocol = function () {
+  var self = this
+  debug("Checking protocol version");
+  switch (self.config.product) {
+    case "TH-86CQ1W":
+      return false;
+    case "TH-75CQ1W":
+      return false;
+    case "TH-65CQ1W":
+      return false;
+    case "TH-55CQ1W":
+      return false;
+    case "TH-43CQ1W":
+      return false;
+    case "TH-49CQE1W":
+      return true;
+    default:
+      false
+  }
+}
 instance_skel.extendedBy(instance);
 exports = module.exports = instance;
