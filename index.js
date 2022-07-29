@@ -1,5 +1,6 @@
 var tcp = require("../../tcp");
 var instance_skel = require("../../instance_skel");
+var crypto = require('crypto');
 var debug;
 var log;
 var cmd_debug = true;
