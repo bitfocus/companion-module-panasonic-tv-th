@@ -129,6 +129,18 @@ instance.prototype.config_fields = function () {
   ];
 };
 
+instance.prototype.init_variables = function () {
+  var self = this
+  var variables = []
+  if (self.protocol === "new") {
+    variables.push({
+      label: 'TV Power Status',
+      name: 'powerState',
+    })
+
+    self.setVariableDefinitions(variables)
+  }
+}
 // When module gets deleted
 instance.prototype.destroy = function () {
   var self = this;
