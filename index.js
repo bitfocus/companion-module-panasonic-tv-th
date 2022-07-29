@@ -40,9 +40,19 @@ instance.prototype.init = function () {
 instance.prototype.init_tcp = function () {
   var self = this;
 
+  if (self.socketTimer) {
+    clearInterval(self.socketTimer)
+    delete self.socketTimer
+  }
+
+  if (self.poll_interval) {
+    clearInterval(self.poll_interval)
+    delete self.poll_interval
+  }
+
   if (self.socket !== undefined) {
-    self.socket.destroy();
-    delete self.socket;
+    self.socket.destroy()
+    delete self.socket
   }
 
   self.status(self.STATE_WARNING, "Connecting");
@@ -58,16 +68,31 @@ instance.prototype.init_tcp = function () {
       debug("Network error", err);
       self.status(self.STATE_ERROR, err);
       self.log("error", "Network error: " + err.message);
+      self.connected = false
+      delete self.socket
+      if (self.socketTimer) {
+        clearInterval(self.socketTimer)
+        delete self.socketTimer
+      }
+      self.socketTimer = setInterval(function () {
+        self.status(self.STATUS_ERROR, 'Retrying connection')
+        self.init_tcp()
+      }, 10000)
     });
 
     self.socket.on("connect", function (socket) {
-      self.status(self.STATE_OK);
       debug("Connected");
-      console.log("Connected");
+      if (self.lastStatus != self.STATUS_OK) {
+        self.status(self.STATUS_OK, 'Connected')
+        debug('Connected to TV')
+        self.lastStatus = self.STATUS_OK
+        self.checkPowerStatus()
+        self.pollTime = self.config.pollTime ? self.config.pollTime * 1000 : 10000
+        self.poll_interval = setInterval(self.poll.bind(self), self.pollTime) //ms for poll
+        self.poll()
+      }
 
-      socket.once("close", function () {
-        console.log("Disconnect");
-      });
+      self.connected = true
     });
 
     self.socket.on("data", function (d) {
