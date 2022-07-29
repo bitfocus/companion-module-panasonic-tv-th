@@ -19,14 +19,10 @@ function instance(system, id, config) {
 
 instance.prototype.updateConfig = function (config) {
   var self = this;
-  self.init_presets();
-
-  if (self.socket !== undefined) {
-    self.socket.destroy();
-    delete self.socket;
-  }
-
   self.config = config;
+  self.setProtocol()
+  self.init_presets();
+  self.init_variables()
   self.init_tcp();
 };
 
