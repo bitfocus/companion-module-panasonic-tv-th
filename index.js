@@ -31,7 +31,9 @@ instance.prototype.init = function () {
 
   debug = self.debug;
   log = self.log;
+  self.setProtocol()
   self.init_presets();
+  self.init_variables()
   self.init_tcp();
 };
 
