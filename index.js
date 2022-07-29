@@ -362,6 +362,16 @@ instance.prototype.action = function (action) {
   }
 };
 
+instance.prototype.checkPowerStatus = function () {
+  var self = this
+  if (self.socket !== undefined && self.socket.connected && self.protocol === "new") {
+    debug("Checking power state");
+    self.socket.write(self.hash + "00QPW" + "\r");
+  } else {
+    debug("Socket not connected :(");
+  }
+}
+
 instance.prototype.setProtocol = function () {
   var self = this
   self.protocol = this.isNewProtocol() ? 'new' : 'old';
