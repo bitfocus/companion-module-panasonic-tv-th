@@ -388,5 +388,21 @@ instance.prototype.isNewProtocol = function () {
       false
   }
 }
+
+
+instance.prototype.poll = function () {
+  var self = this
+  debug("Polling");
+  // // var checkHours = false
+
+  // re-connect?
+  if (!self.socket.connected) {
+    self.init_tcp()
+    return
+  }
+  self.checkPowerStatus()
+}
+
+
 instance_skel.extendedBy(instance);
 exports = module.exports = instance;
