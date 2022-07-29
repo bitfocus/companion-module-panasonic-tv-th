@@ -345,6 +345,24 @@ instance.prototype.action = function (action) {
       console.log(cmd)
     } else {
       debug("Socket not connected :(");
+      }
+    }
+  } else {
+    cmd = action.action
+    if (action.options.action !== undefined) {
+      cmd = cmd + ":" + action.options.action
+    }
+    cmd = `${self.hash}00${cmd}\r`
+
+    if (cmd !== undefined) {
+      debug("sending ", cmd, "to", self.config.host);
+
+      if (self.socket !== undefined && self.socket.connected) {
+        self.socket.write(cmd);
+        console.log(cmd)
+      } else {
+        debug("Socket not connected :(");
+      }
     }
   }
 };
