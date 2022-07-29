@@ -88,6 +88,11 @@ instance.prototype.init_tcp = function () {
           console.log("Response: " + self.config.pass);
         }
       }
+      if (String(d).match(/NTCONTROL\s1\s\w+/)) {
+        debug("New comanand structure")
+        let seed = String(d).split(" ")[2].trim();
+        self.hash = crypto.createHash('md5').update(self.config.user + ":" + self.config.pass + ":" + seed).digest("hex");
+      }
     });
   }
 
