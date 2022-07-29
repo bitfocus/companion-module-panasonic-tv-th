@@ -10,5 +10,5 @@ This module will connect to a Panasonic TV TH series, such as the TH-86CQ1W, TH-
 * Input Select
 * View Mode
 
-New models (such as the TH-49CQE1W), require and updated communication protocol, if using one of these new models you will also get the power status reported as a variable. 
+New models (such as the TH-49CQE1W), require an updated communication protocol, if using one of these new models you will also get the power status reported as a variable. 
 
