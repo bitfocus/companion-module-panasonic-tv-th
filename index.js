@@ -28,7 +28,6 @@ instance.prototype.updateConfig = function (config) {
 
 instance.prototype.init = function () {
   var self = this;
-
   debug = self.debug;
   log = self.log;
   self.setProtocol()
@@ -155,8 +154,7 @@ instance.prototype.init_tcp = function () {
 instance.prototype.config_fields = function () {
   var self = this;
 
-  return [
-    {
+  return [{
       type: "textinput",
       id: "host",
       label: "Target IP",
@@ -184,7 +182,7 @@ instance.prototype.config_fields = function () {
       label: "Password",
       width: 4,
       default: "@Panasonic",
-    },
+    }
   ];
 };
 
@@ -215,65 +213,56 @@ instance.prototype.destroy = function () {
   debug("destroy", self.id);
 };
 
-instance.prototype.CHOICES_IMS = [
-  { id: "HM1", label: "HDMI 1" },
-  { id: "HM2", label: "HDMI 2" },
-  { id: "PC1", label: "PC" },
-  { id: "UD1", label: "USB" },
+instance.prototype.CHOICES_IMS = [{
+    id: "HM1",
+    label: "HDMI 1"
+  },
+  {
+    id: "HM2",
+    label: "HDMI 2"
+  },
+  {
+    id: "PC1",
+    label: "PC"
+  },
+  {
+    id: "UD1",
+    label: "USB"
+  },
 ];
 
-instance.prototype.CHOICES_DAM = [
-  { id: "FULL", label: "Full" },
-  { id: "NORM", label: "Normal" },
-  { id: "NATV", label: "Native" },
-  { id: "ZOOM", label: "Zoom" },
+instance.prototype.CHOICES_DAM = [{
+    id: "FULL",
+    label: "Full"
+  },
+  {
+    id: "NORM",
+    label: "Normal"
+  },
+  {
+    id: "NATV",
+    label: "Native"
+  },
+  {
+    id: "ZOOM",
+    label: "Zoom"
+  },
 ];
 
-instance.prototype.CHOICES_AMT = [
-  { id: "0", label: "Mute off" },
-  { id: "1", label: "Mute on" },
+instance.prototype.CHOICES_AMT = [{
+    id: "0",
+    label: "Mute off"
+  },
+  {
+    id: "1",
+    label: "Mute on"
+  },
 ];
 
 instance.prototype.init_presets = function () {
   var self = this;
   var presets = [];
   var pstSize = "18";
-
-  /*	presets.push({
-		category: 'Inputs',
-		label: 'TV',
-		bank: {
-			style: 'text',
-			text: 'TV',
-			size: pstSize,
-			color: '16777215',
-			bgcolor: 0
-		},
-		actions: [{
-			action: 'input_tv',
-		}]
-	});
-
-	for (var input in self.CHOICES_INPUTS) {
-		presets.push({
-			category: 'Inputs',
-			label: self.CHOICES_INPUTS[input].label,
-			bank: {
-				style: 'text',
-				text: self.CHOICES_INPUTS[input].label,
-				size: pstSize,
-				color: '16777215',
-				bgcolor: 0
-			},
-			actions: [{
-				action: 'input',
-				options: {
-					action: self.CHOICES_INPUTS[input].id,
-				}
-			}]
-		});
-	}
-	*/
   self.setPresetDefinitions(presets);
 };
 
@@ -281,60 +270,56 @@ instance.prototype.actions = function (system) {
   var self = this;
 
   self.setActions({
-    PON: { label: "Power ON" },
-    POF: { label: "Power OFF" },
+    PON: {
+      label: "Power ON"
+    },
+    POF: {
+      label: "Power OFF"
+    },
     AVL: {
       label: "Set Volume",
-      options: [
-        {
-          type: "number",
-          id: "action",
-          label: "Volume 0-100%",
-          min: 1,
-          max: 100,
-          default: 50,
-          required: true,
-          range: false,
-          regex: self.REGEX_NUMBER,
-        },
-      ],
-		},
-		AMT: {
+      options: [{
+        type: "number",
+        id: "action",
+        label: "Volume 0-100%",
+        min: 1,
+        max: 100,
+        default: 50,
+        required: true,
+        range: false,
+        regex: self.REGEX_NUMBER,
+      }, ],
+    },
+    AMT: {
       label: "Mute",
-      options: [
-        {
-          type: "dropdown",
-          id: "action",
-          label: "Input",
-          default: "1",
-          choices: self.CHOICES_AMT
-        },
-      ],
+      options: [{
+        type: "dropdown",
+        id: "action",
+        label: "Input",
+        default: "1",
+        choices: self.CHOICES_AMT
+      }, ],
     },
     IMS: {
       label: "Input Select",
-      options: [
-        {
-          type: "dropdown",
-          id: "action",
-          label: "Input",
-          default: "IM1",
-          choices: self.CHOICES_IMS,
-        },
-      ],
+      options: [{
+        type: "dropdown",
+        id: "action",
+        label: "Input",
+        default: "IM1",
+        choices: self.CHOICES_IMS,
+      }, ],
     },
 
     DAM: {
       label: "View Mode",
-      options: [
-        {
-          type: "dropdown",
-          id: "action",
-          label: "Mode:",
-          default: "1",
-          choices: self.CHOICES_DAM,
-        },
-      ],
+      options: [{
+        type: "dropdown",
+        id: "action",
+        label: "Mode:",
+        default: "1",
+        choices: self.CHOICES_DAM,
+      }, ],
     },
   });
 };
@@ -342,20 +327,22 @@ instance.prototype.actions = function (system) {
 instance.prototype.action = function (action) {
   var self = this;
   var cmd;
-	console.log("XX", action);
+  console.log("XX", action);
+  if (self.protocol === "old") {
 
-	cmd = "\x02" + action.action
-	if (action.options.action !== undefined) {
-		cmd = cmd + ":" + action.options.action
-	}
-	cmd = cmd + "\x03\n"
+  }
+  cmd = "\x02" + action.action
+  if (action.options.action !== undefined) {
+    cmd = cmd + ":" + action.options.action
+  }
+  cmd = cmd + "\x03\n"
 
   if (cmd !== undefined) {
     debug("sending ", cmd, "to", self.config.host);
 
     if (self.socket !== undefined && self.socket.connected) {
-			self.socket.send(Buffer.from(cmd));
-			console.log(cmd)
+      self.socket.send(Buffer.from(cmd));
+      console.log(cmd)
     } else {
       debug("Socket not connected :(");
     }
