@@ -144,7 +144,7 @@ module.exports = {
 			let seed = data.split(' ')[2].trim()
 			self.hash = crypto
 				.createHash('md5')
-				.update(seed+self.config.pass)
+				.update(seed + self.config.pass)
 				.digest('hex')
 
 			self.log('debug', 'Seed: ' + seed)
@@ -153,12 +153,12 @@ module.exports = {
 			self.log('debug', 'Hash: ' + self.hash)
 		}
 
-		if (data === '000' || data === '00POF') {
+		if (data === '000' || data === '00POF' || data.indexOf('POF') !== -1) {
 			self.log('info', 'TV is Off')
 			self.DATA.powerState = 0
 		}
 
-		if (data === '001' || data === '00PON') {
+		if (data === '001' || data === '00PON' || data.indexOf('PON') !== -1) {
 			self.log('info', 'TV is On')
 			self.DATA.powerState = 1
 		}
@@ -192,13 +192,14 @@ module.exports = {
 		let cmd = undefined
 
 		if (self.protocol === 'old') {
+			cmd = ''
 			if (self.hash !== undefined) {
 				//if the hash is set, protect mode must be on
 				cmd = self.hash
 			}
 
 			// old protocol
-			cmd = '\x02' + command //STX
+			cmd += '\x02' + command //STX
 			if (params !== undefined) {
 				cmd += ':' + params
 			}

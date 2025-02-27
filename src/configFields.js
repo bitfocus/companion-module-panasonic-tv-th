@@ -69,7 +69,8 @@ module.exports = {
 				id: 'protocol-old-info',
 				width: 12,
 				label: 'Protocol Info',
-				value: 'On older displays, make sure you are using "Protocol 1" in the Display Settings instead of "Protocol 2".',
+				value:
+					'On older displays, make sure you are using "Protocol 1" in the Display Settings instead of "Protocol 2".',
 			},
 			{
 				type: 'static-text',
